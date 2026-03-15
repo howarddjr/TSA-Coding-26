@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% block title %}{{ career.title }} — STEMPath{% endblock %}
+
+{% block content %}
+
+<!-- ── Detail Hero ───────────────────────────────────────────── -->
+<div class="detail-hero" aria-label="{{ career.title }} overview">
+  <div class="container">
+    <nav aria-label="Breadcrumb" class="mb-3">
+      <ol class="breadcrumb" style="--bs-breadcrumb-divider: '›';">
+        <li class="breadcrumb-item"><a href="{{ url_for('careers') }}" style="color:rgba(255,255,255,.7);">Explore</a></li>
+        <li class="breadcrumb-item active" style="color:white;" aria-current="page">{{ career.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="detail-icon-lg" style="background:{{ career.color }};" aria-hidden="true">
+      <i class="{{ career.icon }}"></i>
+    </div>
+    <h1>{{ career.title }}</h1>
+    <p style="color:rgba(255,255,255,.85);max-width:580px;font-size:1.1rem;margin-bottom:1.25rem;">
+      {{ career.summary }}
+    </p>
+    <div class="d-flex flex-wrap gap-2">
+      {% for tag in career.tags %}
+      <span class="tag" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.9);">
+        {{ tag }}
+      </span>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- ── Section anchor quick-nav ─────────────────────────────── -->
+<div class="bg-surface border-bottom" style="border-color:var(--clr-border)!important;position:sticky;top:62px;z-index:100;">
+  <div class="container">
+    <nav aria-label="Page sections" class="d-flex gap-1 overflow-auto py-2" style="scrollbar-width:none;">
+      {% for anchor, label in [
+        ('#about',        '📖 About'),
+        ('#hs-courses',   '📚 HS Courses'),
+        ('#extracurriculars','🎯 Extracurriculars'),
+        ('#skills',       '🛠️ Skills'),
+        ('#pathway',      '🛤️ Pathway'),
+        ('#education',    '🎓 Education'),
+        ('#entry-jobs',   '💼 Jobs'),
+      ] %}
+      <a href="{{ anchor }}"
+         class="btn btn-sm"
+         style="white-space:nowrap;background:var(--clr-surface-2);border:1px solid var(--clr-border);color:var(--clr-text);border-radius:2rem;font-size:.8rem;padding:.25rem .75rem;">
+        {{ label }}
+      </a>
+      {% endfor %}
+    </nav>
+  </div>
+</div>
+
+<!-- ── Content ───────────────────────────────────────────────── -->
+<section class="py-5">
+  <div class="container">
+    <div class="row gy-4">
+
+      <!-- Main column -->
+      <div class="col-lg-8">
+
+        <!-- About -->
+        <div class="detail-section" id="about">
+          <h2><i class="fa-solid fa-book-open" aria-hidden="true"></i> About this career</h2>
+          <p>{{ career.description }}</p>
+        </div>
+
+        <!-- HS Courses -->
+        <div class="detail-section" id="hs-courses">
+          <h2><i class="fa-solid fa-book" aria-hidden="true"></i> High School Course Preparation 📚</h2>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem;">
+            {% for course in career.hs_courses %}
+            <li style="display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;background:var(--clr-surface-2);border-radius:var(--radius-sm);">
+              <i class="fa-solid fa-circle-check" style="color:var(--clr-success);" aria-hidden="true"></i>
+              {{ course }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Extracurriculars -->
+        <div class="detail-section" id="extracurriculars">
+          <h2><i class="fa-solid fa-trophy" aria-hidden="true"></i> Extracurriculars &amp; Experiential Learning 🎯</h2>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem;">
+            {% for ec in career.extracurriculars %}
+            <li style="display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;background:var(--clr-surface-2);border-radius:var(--radius-sm);">
+              <i class="fa-solid fa-star" style="color:var(--clr-accent);" aria-hidden="true"></i>
+              {{ ec }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Skills -->
+        <div class="detail-section" id="skills">
+          <h2><i class="fa-solid fa-wrench" aria-hidden="true"></i> Professional Skills 🛠️</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <h3 style="font-size:.9rem;font-weight:700;color:var(--clr-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">
+                Technical Skills
+              </h3>
+              <div class="d-flex flex-wrap gap-2">
+                {% for s in career.skills.technical %}
+                <span class="tag tag-tech">{{ s }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h3 style="font-size:.9rem;font-weight:700;color:var(--clr-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">
+                Transferable / Soft Skills
+              </h3>
+              <div class="d-flex flex-wrap gap-2">
+                {% for s in career.skills.transferable %}
+                <span class="tag tag-soft">{{ s }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Career Pathway Timeline -->
+        <div class="detail-section" id="pathway">
+          <h2><i class="fa-solid fa-road" aria-hidden="true"></i> Career Pathway 🛤️</h2>
+          <div class="pathway-timeline" role="list">
+
+            <!-- High School -->
+            <div class="timeline-step" role="listitem">
+              <div class="timeline-dot" style="background:#0ea5e9;" aria-hidden="true">HS</div>
+              <div class="timeline-content">
+                <div class="timeline-label" style="color:#0ea5e9;">High School</div>
+                <ul class="timeline-items" aria-label="High school steps">
+                  {% for step in career.roadmap.high_school %}
+                  <li>{{ step }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Post-Secondary -->
+            <div class="timeline-step" role="listitem">
+              <div class="timeline-dot" style="background:#f97316;" aria-hidden="true">
+                <i class="fa-solid fa-graduation-cap" style="font-size:.7rem;" aria-hidden="true"></i>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-label" style="color:#f97316;">Post-Secondary Education</div>
+                <ul class="timeline-items" aria-label="Post-secondary steps">
+                  {% for step in career.roadmap.post_secondary %}
+                  <li>{{ step }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Early Career -->
+            <div class="timeline-step" role="listitem">
+              <div class="timeline-dot" style="background:#10b981;" aria-hidden="true">
+                <i class="fa-solid fa-briefcase" style="font-size:.7rem;" aria-hidden="true"></i>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-label" style="color:#10b981;">Early Career</div>
+                <ul class="timeline-items" aria-label="Early career steps">
+                  {% for step in career.roadmap.early_career %}
+                  <li>{{ step }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Post-Secondary Options -->
+        <div class="detail-section" id="education">
+          <h2><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Post-Secondary Options 🎓</h2>
+
+          {% if career.education_links.majors %}
+          <h3 style="font-size:.9rem;font-weight:700;color:var(--clr-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;">
+            Degree Majors
+          </h3>
+          <div class="d-flex flex-column gap-2 mb-3">
+            {% for link in career.education_links.majors %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="edu-link">
+              <i class="fa-solid fa-university" aria-hidden="true"></i>
+              {{ link.title }}
+              <i class="fa-solid fa-arrow-up-right-from-square ms-auto" style="font-size:.75rem;opacity:.6;" aria-hidden="true"></i>
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if career.education_links.programs %}
+          <h3 style="font-size:.9rem;font-weight:700;color:var(--clr-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;margin-top:1rem;">
+            Technical &amp; Associate Programs
+          </h3>
+          <div class="d-flex flex-column gap-2 mb-3">
+            {% for link in career.education_links.programs %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="edu-link">
+              <i class="fa-solid fa-school" aria-hidden="true"></i>
+              {{ link.title }}
+              <i class="fa-solid fa-arrow-up-right-from-square ms-auto" style="font-size:.75rem;opacity:.6;" aria-hidden="true"></i>
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if career.education_links.certifications %}
+          <h3 style="font-size:.9rem;font-weight:700;color:var(--clr-text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem;margin-top:1rem;">
+            Certifications
+          </h3>
+          <div class="d-flex flex-column gap-2">
+            {% for link in career.education_links.certifications %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" class="edu-link">
+              <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+              {{ link.title }}
+              <i class="fa-solid fa-arrow-up-right-from-square ms-auto" style="font-size:.75rem;opacity:.6;" aria-hidden="true"></i>
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <p class="text-muted small mt-3 mb-0">
+            <i class="fa-solid fa-circle-info me-1" aria-hidden="true"></i>
+            Links marked "(placeholder)" are example paths — verify with your counselor.
+            All external links open in a new tab.
+          </p>
+        </div>
+
+        <!-- Entry-Level Jobs -->
+        <div class="detail-section" id="entry-jobs">
+          <h2><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Entry-Level Roles 💼</h2>
+          <div class="d-flex flex-wrap gap-2">
+            {% for job in career.entry_level_jobs %}
+            <span class="tag" style="font-size:.9rem;padding:.4rem .9rem;">
+              <i class="fa-solid fa-arrow-right" style="font-size:.7rem;color:var(--clr-secondary);" aria-hidden="true"></i>
+              {{ job }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <aside class="sticky-sidebar" aria-label="Career actions">
+
+          <div class="sidebar-card mb-3">
+            <h2 style="font-size:1rem;margin-bottom:1rem;">Actions</h2>
+
+            <form method="POST" action="{{ url_for('bookmark', career_id=career.id) }}" class="d-grid mb-2">
+              <input type="hidden" name="next" value="{{ request.url }}">
+              <button type="submit"
+                      class="btn {% if career.id in bookmarks %}btn-warning{% else %}btn-outline-secondary{% endif %}">
+                <i class="fa-{% if career.id in bookmarks %}solid{% else %}regular{% endif %} fa-bookmark me-2" aria-hidden="true"></i>
+                {% if career.id in bookmarks %}Bookmarked!{% else %}Bookmark this career{% endif %}
+              </button>
+            </form>
+
+            <form method="POST" action="{{ url_for('compare_toggle', career_id=career.id) }}" class="d-grid mb-2">
+              <input type="hidden" name="next" value="{{ request.url }}">
+              <button type="submit"
+                      class="btn {% if career.id in compare_list %}btn-info{% else %}btn-outline-primary{% endif %}">
+                <i class="fa-solid fa-scale-balanced me-2" aria-hidden="true"></i>
+                {% if career.id in compare_list %}In compare list{% else %}Add to compare{% endif %}
+              </button>
+            </form>
+
+            <a href="{{ url_for('roadmap') }}" class="btn btn-outline-secondary d-grid">
+              <i class="fa-solid fa-map me-2" aria-hidden="true"></i>
+              View my roadmap
+            </a>
+          </div>
+
+          {% if similar %}
+          <div class="sidebar-card">
+            <h2 style="font-size:1rem;margin-bottom:1rem;">
+              <i class="fa-solid fa-shuffle me-1" aria-hidden="true"></i>
+              Similar careers
+            </h2>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.6rem;">
+              {% for s in similar %}
+              <li>
+                <a href="{{ url_for('career_detail', career_id=s.id) }}"
+                   class="d-flex align-items-center gap-2 text-decoration-none p-2 rounded"
+                   style="background:var(--clr-surface-2);transition:var(--transition);">
+                  <span style="width:2rem;height:2rem;border-radius:.5rem;background:{{ s.color }};display:flex;align-items:center;justify-content:center;color:white;font-size:.8rem;flex-shrink:0;" aria-hidden="true">
+                    <i class="{{ s.icon }}"></i>
+                  </span>
+                  <span style="font-size:.88rem;font-weight:600;color:var(--clr-text);">{{ s.title }}</span>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+        </aside>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

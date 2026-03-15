@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Your STEM Matches — STEMPath{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <!-- Header -->
+    <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-4">
+      <div>
+        <div class="hero-eyebrow d-inline-flex mb-3"
+             style="background:var(--clr-surface-2);border:1px solid var(--clr-border);color:var(--clr-text-muted);">
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+          Your personalized results
+        </div>
+        <h1 style="font-size:clamp(1.6rem,4vw,2.5rem);">
+          Here are your top STEM matches 🎯
+        </h1>
+        {% if interests %}
+        <p class="text-muted">
+          Based on your interests in
+          <strong>{{ interests | join(", ") }}</strong>
+          {% if strengths %}and your strengths in <strong>{{ strengths | join(", ") }}</strong>{% endif %}.
+        </p>
+        {% else %}
+        <p class="text-muted">Showing all careers — <a href="{{ url_for('home') }}">take the quiz</a> for personalized matches.</p>
+        {% endif %}
+      </div>
+      <a href="{{ url_for('home') }}" class="btn btn-outline-primary">
+        <i class="fa-solid fa-rotate-left me-1" aria-hidden="true"></i> Redo quiz
+      </a>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="bg-surface border-custom radius-lg p-3 mb-4 shadow-custom">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-5">
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+            <input type="text" id="careerSearch" class="form-control"
+                   placeholder="Search careers, skills, tags…"
+                   aria-label="Search career recommendations" />
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="filter-chips" role="group" aria-label="Filter by tag">
+            <span class="fw-semibold text-muted small me-1" style="white-space:nowrap;">Filter:</span>
+            {% for tag in all_tags %}
+            <button class="filter-chip {% if tag in interests %}active{% endif %}"
+                    data-tag="{{ tag }}"
+                    aria-pressed="{{ 'true' if tag in interests else 'false' }}"
+                    type="button">{{ tag }}</button>
+            {% endfor %}
+            <button class="filter-chip" id="clearFilters" type="button"
+                    aria-label="Clear all filters">✕ Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Career cards grid -->
+    <div id="careersGrid" class="row g-4" aria-live="polite" aria-label="Career recommendations">
+      {% for item in scored %}
+      {% set c = item.career %}
+      {% set score = item.score %}
+      {% set score_class = "score-high" if score >= 70 else ("score-mid" if score >= 35 else "score-low") %}
+      <div class="col-md-6 col-lg-4 animate-fade-up anim-delay-{{ loop.index if loop.index <= 4 else 4 }}"
+           data-tags="{{ c.tags | join(' ') }}"
+           data-title="{{ c.title }}"
+           data-skills="{{ (c.skills.technical + c.skills.transferable) | join(' ') }}">
+        <article class="career-card" aria-label="{{ c.title }} career card">
+          <div class="career-card-accent"></div>
+          <div class="career-card-body">
+
+            <!-- Icon + title -->
+            <div class="d-flex align-items-start gap-3 mb-3">
+              <div class="career-card-icon" style="background:{{ c.color }};" aria-hidden="true">
+                <i class="{{ c.icon }}"></i>
+              </div>
+              <div>
+                <h2 class="career-card-title">{{ c.title }}</h2>
+                {% if score > 0 %}
+                <div class="{{ score_class }}">
+                  <div class="match-label">
+                    <span>Match score</span>
+                    <span><strong>{{ score }}%</strong></span>
+                  </div>
+                  <div class="match-bar-bg" role="progressbar"
+                       aria-valuenow="{{ score }}" aria-valuemin="0" aria-valuemax="100"
+                       aria-label="{{ score }}% match">
+                    <div class="match-bar-fill" data-score="{{ score }}" style="width:0%"></div>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <p class="career-card-summary">{{ c.summary }}</p>
+
+            <!-- Tags -->
+            <div class="d-flex flex-wrap gap-1 mb-3" aria-label="Career tags">
+              {% for tag in c.tags[:4] %}
+              <span class="tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+
+            <!-- Actions -->
+            <div class="career-card-actions">
+              <a href="{{ url_for('career_detail', career_id=c.id) }}"
+                 class="btn btn-primary btn-sm flex-grow-1"
+                 aria-label="View pathway for {{ c.title }}">
+                <i class="fa-solid fa-road me-1" aria-hidden="true"></i> View Pathway
+              </a>
+
+              <form method="POST" action="{{ url_for('bookmark', career_id=c.id) }}" class="d-inline">
+                <input type="hidden" name="next" value="{{ request.url }}">
+                <button type="submit"
+                        class="btn btn-sm {% if c.id in bookmarks %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+                        aria-label="{{ 'Remove bookmark for' if c.id in bookmarks else 'Bookmark' }} {{ c.title }}"
+                        data-bs-toggle="tooltip"
+                        title="{{ 'Bookmarked!' if c.id in bookmarks else 'Save for later' }}">
+                  <i class="fa-{% if c.id in bookmarks %}solid{% else %}regular{% endif %} fa-bookmark" aria-hidden="true"></i>
+                </button>
+              </form>
+
+              <form method="POST" action="{{ url_for('compare_toggle', career_id=c.id) }}" class="d-inline">
+                <input type="hidden" name="next" value="{{ request.url }}">
+                <button type="submit"
+                        class="btn btn-sm {% if c.id in compare_list %}btn-info{% else %}btn-outline-secondary{% endif %}"
+                        aria-label="{{ 'Remove from compare' if c.id in compare_list else 'Add to compare' }} {{ c.title }}"
+                        data-bs-toggle="tooltip"
+                        title="{{ 'In compare list' if c.id in compare_list else 'Compare' }}">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- No results -->
+    <div id="noResults" class="no-results" style="display:none;" aria-live="polite">
+      <i class="fa-solid fa-search" aria-hidden="true"></i>
+      <h3>No careers match that filter</h3>
+      <p>Try clearing the filters or searching for something else.</p>
+    </div>
+
+    <!-- CTA row -->
+    <div class="text-center mt-5 pt-3">
+      <p class="text-muted mb-3">Want to see everything?</p>
+      <a href="{{ url_for('careers') }}" class="btn btn-outline-primary me-2">
+        <i class="fa-solid fa-grid me-1" aria-hidden="true"></i> Browse all careers
+      </a>
+      {% if compare_count > 0 %}
+      <a href="{{ url_for('compare') }}" class="btn btn-info">
+        <i class="fa-solid fa-scale-balanced me-1" aria-hidden="true"></i>
+        Compare {{ compare_count }} selected
+      </a>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

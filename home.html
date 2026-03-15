@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}STEM Career Path Explorer — Find Your Path 🧭{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ─────────────────────────────────────────────────── -->
+<section class="hero" aria-label="Welcome to STEMPath">
+  <div class="container hero-content">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6">
+        <div class="hero-eyebrow">
+          <i class="fa-solid fa-compass" aria-hidden="true"></i>
+          For students in grades 7–12
+        </div>
+        <h1>Find your<br>STEM <span class="text-accent">career path.</span> 🎯</h1>
+        <p class="hero-lead">
+          Answer a few quick questions about what you love and where you shine—then discover
+          careers, educational pathways, and actionable roadmaps tailored to you.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">10</span>
+            <span class="hero-stat-label">STEM Careers</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">3</span>
+            <span class="hero-stat-label">Pathway Stages</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">∞</span>
+            <span class="hero-stat-label">Possibilities</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <div style="font-size: 8rem; line-height: 1; filter: drop-shadow(0 8px 24px rgba(0,0,0,.25));"
+             role="img" aria-label="Science and tech icons">
+          🔬🤖💻🧬
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Quiz Form ─────────────────────────────────────────────── -->
+<section class="py-5" aria-label="Interest and strengths quiz">
+  <div class="container">
+    <div class="section-heading animate-fade-up">
+      <h2>What makes you <span class="text-accent">you?</span></h2>
+      <p>Select everything that fits—there are no wrong answers. You can change these anytime. 🌟</p>
+    </div>
+
+    <form action="{{ url_for('recommend') }}" method="POST" novalidate
+          aria-label="Career quiz form" class="animate-fade-up anim-delay-1">
+
+      <div class="quiz-card mb-4">
+
+        <!-- Grade level (optional) -->
+        <div class="mb-4">
+          <label for="grade" class="form-label quiz-section-title">
+            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+            What grade are you in? <span class="fw-normal text-muted fs-6">(optional)</span>
+          </label>
+          <select class="form-select" id="grade" name="grade"
+                  style="max-width: 280px; background: var(--clr-surface-2); border: 2px solid var(--clr-border); color: var(--clr-text); border-radius: var(--radius-sm);">
+            <option value="">Prefer not to say</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9 (Freshman)</option>
+            <option value="10">Grade 10 (Sophomore)</option>
+            <option value="11">Grade 11 (Junior)</option>
+            <option value="12">Grade 12 (Senior)</option>
+          </select>
+        </div>
+
+        <hr style="border-color: var(--clr-border); margin: 1.5rem 0;" />
+
+        <!-- Interests -->
+        <div class="quiz-section mb-5" id="interestsSection">
+          <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <h2 class="quiz-section-title mb-0">
+              <i class="fa-solid fa-heart" aria-hidden="true"></i>
+              What topics interest you?
+            </h2>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      data-select-group="all" aria-label="Select all interests">Select all</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      data-select-group="none" aria-label="Clear all interests">Clear</button>
+            </div>
+          </div>
+          <p class="text-muted small mb-3">Pick as many as you like — even vague interests count!</p>
+          <div class="interest-grid" role="group" aria-label="Interest topics">
+            {% for value, label, icon in interest_options %}
+            <label class="check-label" data-bs-toggle="tooltip"
+                   title="{{ label }}">
+              <input type="checkbox" name="interests" value="{{ value }}"
+                     {% if value in selected_interests %}checked{% endif %} />
+              <span class="check-box" aria-hidden="true">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+              </span>
+              <span class="check-icon" aria-hidden="true">
+                <i class="{{ icon }}"></i>
+              </span>
+              {{ label }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <hr style="border-color: var(--clr-border); margin: 1.5rem 0;" />
+
+        <!-- Strengths -->
+        <div class="quiz-section mb-5" id="strengthsSection">
+          <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <h2 class="quiz-section-title mb-0">
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              What are your strengths?
+            </h2>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      data-select-group="all" aria-label="Select all strengths">Select all</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      data-select-group="none" aria-label="Clear all strengths">Clear</button>
+            </div>
+          </div>
+          <p class="text-muted small mb-3">Think about what teachers and friends say you're great at.</p>
+          <div class="strength-grid" role="group" aria-label="Personal strengths">
+            {% for value, label, icon in strength_options %}
+            <label class="check-label" data-bs-toggle="tooltip"
+                   title="{{ label }}">
+              <input type="checkbox" name="strengths" value="{{ value }}"
+                     {% if value in selected_strengths %}checked{% endif %} />
+              <span class="check-box" aria-hidden="true">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+              </span>
+              <span class="check-icon" aria-hidden="true">
+                <i class="{{ icon }}"></i>
+              </span>
+              {{ label }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary btn-lg px-5">
+            <i class="fa-solid fa-magnifying-glass me-2" aria-hidden="true"></i>
+            Find My STEM Careers 🎯
+          </button>
+          <p class="text-muted small mt-2 mb-0">
+            No account needed · Your selections stay on your device
+          </p>
+        </div>
+      </div>
+    </form>
+
+    <!-- Quick explore nudge -->
+    <div class="text-center mt-3 animate-fade-up anim-delay-2">
+      <p class="text-muted">
+        Not sure yet?
+        <a href="{{ url_for('careers') }}" class="fw-semibold">
+          Browse all 10 careers first <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── How it works ──────────────────────────────────────────── -->
+<section class="py-5 bg-surface-2" aria-label="How STEMPath works">
+  <div class="container">
+    <div class="section-heading">
+      <h2>How it works 🧭</h2>
+    </div>
+    <div class="row g-4 text-center">
+      {% for step in [
+        ("1", "fa-solid fa-list-check", "#0ea5e9", "Tell us about you", "Check off the topics you love and the skills you're proud of."),
+        ("2", "fa-solid fa-wand-magic-sparkles", "#f97316", "Get matched", "Our transparent scoring finds careers that fit your interests and strengths."),
+        ("3", "fa-solid fa-road", "#10b981", "Follow your path", "Explore detailed pathways from high school all the way to your first job."),
+      ] %}
+      <div class="col-md-4 animate-fade-up anim-delay-{{ loop.index }}">
+        <div class="p-4 bg-surface border-custom radius-lg shadow-custom h-100">
+          <div class="d-flex align-items-center justify-content-center mb-3">
+            <div style="width:3.5rem;height:3.5rem;border-radius:.875rem;background:{{ step[2] }};display:flex;align-items:center;justify-content:center;color:white;font-size:1.4rem;" aria-hidden="true">
+              <i class="{{ step[1] }}"></i>
+            </div>
+          </div>
+          <h3 style="font-size:1rem;">Step {{ step[0] }}: {{ step[3] }}</h3>
+          <p class="text-muted mb-0" style="font-size:.9rem;">{{ step[4] }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

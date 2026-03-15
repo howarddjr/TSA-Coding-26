@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Explore STEM Careers — STEMPath{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div style="background:linear-gradient(135deg,var(--clr-primary),#1a4a8a);padding:3rem 0 2.5rem;">
+  <div class="container">
+    <div class="hero-eyebrow d-inline-flex mb-3">
+      <i class="fa-solid fa-compass" aria-hidden="true"></i>
+      Career Explorer
+    </div>
+    <h1 style="color:white;font-size:clamp(1.8rem,4vw,2.8rem);">
+      Explore 10 STEM Careers 🔭
+    </h1>
+    <p style="color:rgba(255,255,255,.8);max-width:540px;margin-bottom:0;">
+      Browse every career in our library. Use the search and filters to find exactly what interests you.
+    </p>
+  </div>
+</div>
+
+<section class="py-5">
+  <div class="container">
+
+    <!-- Search + filter bar -->
+    <div class="bg-surface border-custom radius-lg p-3 mb-4 shadow-custom">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-5">
+          <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+            <input type="text" id="careerSearch" class="form-control"
+                   placeholder="Search by title, skill, or tag…"
+                   aria-label="Search careers" />
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="filter-chips" role="group" aria-label="Filter by topic">
+            <span class="fw-semibold text-muted small" style="white-space:nowrap;">Topic:</span>
+            {% for tag in all_tags %}
+            <button class="filter-chip" data-tag="{{ tag }}"
+                    aria-pressed="false" type="button">{{ tag }}</button>
+            {% endfor %}
+            <button class="filter-chip" id="clearFilters" type="button"
+                    aria-label="Clear all filters">✕ Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div id="careersGrid" class="row g-4" aria-live="polite" aria-label="All STEM careers">
+      {% for c in careers %}
+      <div class="col-sm-6 col-lg-4 col-xl-3 animate-fade-up anim-delay-{{ loop.index if loop.index <= 4 else 1 }}"
+           data-tags="{{ c.tags | join(' ') }}"
+           data-title="{{ c.title }}"
+           data-skills="{{ (c.skills.technical + c.skills.transferable) | join(' ') }}">
+        <article class="career-card" aria-label="{{ c.title }}">
+          <div class="career-card-accent" style="background:{{ c.color }};height:5px;"></div>
+          <div class="career-card-body">
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="career-card-icon" style="background:{{ c.color }};" aria-hidden="true">
+                <i class="{{ c.icon }}"></i>
+              </div>
+              <h2 class="career-card-title mb-0">{{ c.title }}</h2>
+            </div>
+
+            <p class="career-card-summary">{{ c.summary }}</p>
+
+            <!-- Tags -->
+            <div class="d-flex flex-wrap gap-1 mb-3" aria-label="Tags">
+              {% for tag in c.tags[:4] %}
+              <span class="tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+
+            <!-- Top skills -->
+            <div class="d-flex flex-wrap gap-1 mb-3" aria-label="Technical skills">
+              {% for skill in c.skills.technical[:3] %}
+              <span class="tag tag-tech" style="font-size:.72rem;">{{ skill }}</span>
+              {% endfor %}
+            </div>
+
+            <div class="career-card-actions">
+              <a href="{{ url_for('career_detail', career_id=c.id) }}"
+                 class="btn btn-primary btn-sm flex-grow-1"
+                 aria-label="View pathway for {{ c.title }}">
+                View Pathway
+              </a>
+              <form method="POST" action="{{ url_for('bookmark', career_id=c.id) }}" class="d-inline">
+                <input type="hidden" name="next" value="{{ request.url }}">
+                <button type="submit"
+                        class="btn btn-sm {% if c.id in bookmarks %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+                        aria-label="{{ 'Remove bookmark' if c.id in bookmarks else 'Bookmark' }} {{ c.title }}">
+                  <i class="fa-{% if c.id in bookmarks %}solid{% else %}regular{% endif %} fa-bookmark" aria-hidden="true"></i>
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('compare_toggle', career_id=c.id) }}" class="d-inline">
+                <input type="hidden" name="next" value="{{ request.url }}">
+                <button type="submit"
+                        class="btn btn-sm {% if c.id in compare_list %}btn-info{% else %}btn-outline-secondary{% endif %}"
+                        aria-label="{{ 'Remove from compare' if c.id in compare_list else 'Add to compare' }} {{ c.title }}">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div id="noResults" class="no-results" style="display:none;" aria-live="polite">
+      <i class="fa-solid fa-search" aria-hidden="true"></i>
+      <h3>No careers found</h3>
+      <p>Try different keywords or clear the filter.</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-5 pt-2">
+      <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">
+        <i class="fa-solid fa-wand-magic-sparkles me-2" aria-hidden="true"></i>
+        Take the quiz for personalized matches 🎯
+      </a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

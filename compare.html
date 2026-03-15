@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}Compare Careers — STEMPath{% endblock %}
+
+{% block content %}
+
+<div style="background:linear-gradient(135deg,var(--clr-primary),#1a4a8a);padding:3rem 0 2.5rem;">
+  <div class="container">
+    <div class="hero-eyebrow d-inline-flex mb-3">
+      <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+      Side-by-side comparison
+    </div>
+    <h1 style="color:white;font-size:clamp(1.8rem,4vw,2.8rem);">
+      Compare Careers ⚖️
+    </h1>
+    <p style="color:rgba(255,255,255,.8);max-width:560px;margin-bottom:0;">
+      Compare up to 3 careers side-by-side to see what fits your goals.
+    </p>
+  </div>
+</div>
+
+<section class="py-5">
+  <div class="container">
+
+    {% if not careers %}
+    <!-- Empty state -->
+    <div class="text-center py-5">
+      <div style="font-size:4rem;margin-bottom:1rem;" aria-hidden="true">⚖️</div>
+      <h2>Nothing to compare yet</h2>
+      <p class="text-muted mb-4 mx-auto" style="max-width:400px;">
+        Go to a career card or detail page and hit the
+        <strong>⚖️ Compare</strong> button to add it here.
+        You can add up to 3.
+      </p>
+      <a href="{{ url_for('careers') }}" class="btn btn-primary btn-lg">
+        <i class="fa-solid fa-compass me-2" aria-hidden="true"></i> Browse careers
+      </a>
+    </div>
+
+    {% elif careers | length == 1 %}
+    <div class="text-center py-5">
+      <div style="font-size:3rem;margin-bottom:1rem;" aria-hidden="true">👆</div>
+      <h2>Add one more career</h2>
+      <p class="text-muted mb-4">You have <strong>{{ careers[0].title }}</strong> selected. Add at least one more to compare.</p>
+      <a href="{{ url_for('careers') }}" class="btn btn-primary">Browse careers</a>
+    </div>
+
+    {% else %}
+
+    <!-- Comparison table -->
+    <div class="table-responsive">
+      <table class="compare-table table table-bordered mb-0" aria-label="Career comparison table">
+        <thead>
+          <tr>
+            <th scope="col" class="compare-row-label" style="width:160px;">Category</th>
+            {% for c in careers %}
+            <th scope="col">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <div style="width:2.2rem;height:2.2rem;border-radius:.55rem;background:{{ c.color }};display:flex;align-items:center;justify-content:center;color:white;font-size:.9rem;flex-shrink:0;" aria-hidden="true">
+                  <i class="{{ c.icon }}"></i>
+                </div>
+                <span>{{ c.title }}</span>
+              </div>
+              <form method="POST" action="{{ url_for('compare_toggle', career_id=c.id) }}" class="d-inline">
+                <input type="hidden" name="next" value="{{ request.url }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                        aria-label="Remove {{ c.title }} from compare">
+                  <i class="fa-solid fa-xmark me-1" aria-hidden="true"></i> Remove
+                </button>
+              </form>
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Summary -->
+          <tr>
+            <td class="compare-row-label">Summary</td>
+            {% for c in careers %}
+            <td>{{ c.summary }}</td>
+            {% endfor %}
+          </tr>
+
+          <!-- Tags -->
+          <tr>
+            <td class="compare-row-label">Topics</td>
+            {% for c in careers %}
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                {% for tag in c.tags %}
+                <span class="tag" style="font-size:.75rem;">{{ tag }}</span>
+                {% endfor %}
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- HS Courses -->
+          <tr>
+            <td class="compare-row-label">HS Courses</td>
+            {% for c in careers %}
+            <td>
+              <ul style="list-style:disc;padding-left:1.2rem;margin:0;font-size:.88rem;">
+                {% for course in c.hs_courses %}
+                <li>{{ course }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Extracurriculars -->
+          <tr>
+            <td class="compare-row-label">Extracurriculars</td>
+            {% for c in careers %}
+            <td>
+              <ul style="list-style:disc;padding-left:1.2rem;margin:0;font-size:.88rem;">
+                {% for ec in c.extracurriculars %}
+                <li>{{ ec }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Technical Skills -->
+          <tr>
+            <td class="compare-row-label">Technical Skills</td>
+            {% for c in careers %}
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                {% for s in c.skills.technical %}
+                <span class="tag tag-tech" style="font-size:.75rem;">{{ s }}</span>
+                {% endfor %}
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Soft Skills -->
+          <tr>
+            <td class="compare-row-label">Soft Skills</td>
+            {% for c in careers %}
+            <td>
+              <div class="d-flex flex-wrap gap-1">
+                {% for s in c.skills.transferable %}
+                <span class="tag tag-soft" style="font-size:.75rem;">{{ s }}</span>
+                {% endfor %}
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Education links -->
+          <tr>
+            <td class="compare-row-label">Education Paths</td>
+            {% for c in careers %}
+            <td>
+              <div class="d-flex flex-column gap-1">
+                {% for link in (c.education_links.majors + c.education_links.programs + c.education_links.certifications)[:3] %}
+                <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer"
+                   class="edu-link" style="font-size:.8rem;">
+                  <i class="fa-solid fa-link" aria-hidden="true"></i>
+                  {{ link.title }}
+                </a>
+                {% endfor %}
+              </div>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- Entry-level jobs -->
+          <tr>
+            <td class="compare-row-label">Entry-Level Roles</td>
+            {% for c in careers %}
+            <td>
+              <ul style="list-style:disc;padding-left:1.2rem;margin:0;font-size:.88rem;">
+                {% for job in c.entry_level_jobs %}
+                <li>{{ job }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            {% endfor %}
+          </tr>
+
+          <!-- View pathway -->
+          <tr>
+            <td class="compare-row-label"></td>
+            {% for c in careers %}
+            <td>
+              <a href="{{ url_for('career_detail', career_id=c.id) }}"
+                 class="btn btn-primary btn-sm w-100">
+                View Full Pathway →
+              </a>
+            </td>
+            {% endfor %}
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('careers') }}" class="btn btn-outline-primary">
+        <i class="fa-solid fa-plus me-1" aria-hidden="true"></i> Add more careers
+      </a>
+    </div>
+
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
