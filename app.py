@@ -58,23 +58,56 @@ STRENGTH_OPTIONS = [
     ("ethics",              "Ethics",              "fa-solid fa-scale-balanced"),
 ]
 
+WORK_STYLE_TAG_MAP = {
+    "hands-on": ["building", "robotics", "design"],
+    "research": ["research", "data", "biology", "environment"],
+    "creative": ["design", "coding", "problem-solving"],
+    "team": ["communication", "leadership", "project-management"],
+    "independent": ["coding", "data", "research"],
+}
+
+CHALLENGE_TYPE_TAG_MAP = {
+    "design": ["design", "engineering", "building"],
+    "data": ["data", "math", "analytics"],
+    "sustainability": ["environment", "biology", "materials"],
+    "health": ["biology", "biomedical", "data"],
+    "systems": ["communications", "network", "security", "engineering"],
+}
+
 
 def load_careers():
     with open(DATA_PATH, "r") as f:
         return json.load(f)
 
 
-def compute_scores(careers, interests, strengths):
+def compute_scores(careers, interests, strengths, work_style=None, challenge_types=None):
     """
     Returns list of (career, score_0_to_100) sorted descending.
-    Score = 1.0×interest_matches + 1.5×strength_bonus_matches.
-    Normalized by max possible raw score across all careers.
+    Weighted scoring from multiple quiz dimensions:
+      - 1.0×interest tag matches
+      - 1.5×strength-inferred tag matches
+      - 1.2×work-style tag matches
+      - 1.3×challenge-type tag matches
+    Normalized to 0-100.
     """
-    # Build expanded interest set from strengths
+    if work_style is None:
+        work_style = []
+    if challenge_types is None:
+        challenge_types = []
     strength_interests = set()
     for s in strengths:
         for tag in STRENGTH_TAG_MAP.get(s, []):
             strength_interests.add(tag)
+
+    work_interests = set()
+    for w in work_style:
+        for tag in WORK_STYLE_TAG_MAP.get(w, []):
+            work_interests.add(tag)
+
+    challenge_interests = set()
+    for ch in challenge_types:
+        for tag in CHALLENGE_TYPE_TAG_MAP.get(ch, []):
+            challenge_interests.add(tag)
 
     user_interests = set(interests)
 
@@ -83,10 +116,17 @@ def compute_scores(careers, interests, strengths):
         tags = set(c.get("tags", []))
         interest_matches = len(tags & user_interests)
         strength_matches = len(tags & strength_interests)
-        raw = interest_matches * 1.0 + strength_matches * 1.5
+        work_matches = len(tags & work_interests)
+        challenge_matches = len(tags & challenge_interests)
+
+        raw = (
+            1.0 * interest_matches
+            + 1.5 * strength_matches
+            + 1.2 * work_matches
+            + 1.3 * challenge_matches
+        )
         tech_skills = len(c.get("skills", {}).get("technical", []))
         scored.append((c, raw, tech_skills))
-
     max_raw = max((s[1] for s in scored), default=1) or 1
     result = []
     for c, raw, tech in scored:
@@ -107,22 +147,28 @@ def home():
         strength_options=STRENGTH_OPTIONS,
         selected_interests=session.get("interests", []),
         selected_strengths=session.get("strengths", []),
+        selected_work_style=session.get("work_style", []),
+        selected_challenge_types=session.get("challenge_types", []),
     )
 
 
 @app.route("/recommend", methods=["POST"])
 def recommend():
-    interests  = request.form.getlist("interests")
-    strengths  = request.form.getlist("strengths")
-    grade      = request.form.get("grade", "")
+    interests       = request.form.getlist("interests")
+    strengths       = request.form.getlist("strengths")
+    work_style      = request.form.getlist("work_style")
+    challenge_types = request.form.getlist("challenge_types")
+    grade           = request.form.get("grade", "")
 
-    session["interests"] = interests
-    session["strengths"] = strengths
-    session["grade"]     = grade
+    session["interests"]         = interests
+    session["strengths"]         = strengths
+    session["work_style"]        = work_style
+    session["challenge_types"]   = challenge_types
+    session["grade"]             = grade
     session.modified = True
 
     careers = load_careers()
-    scored  = compute_scores(careers, interests, strengths)
+    scored  = compute_scores(careers, interests, strengths, work_style, challenge_types)
 
     # All available tags for filter chips
     all_tags = sorted({tag for c in careers for tag in c.get("tags", [])})
@@ -215,12 +261,14 @@ def compare():
 
 @app.route("/roadmap")
 def roadmap():
-    interests = session.get("interests", [])
-    strengths = session.get("strengths", [])
-    bookmarks = session.get("bookmarks", [])
+    interests       = session.get("interests", [])
+    strengths       = session.get("strengths", [])
+    work_style      = session.get("work_style", [])
+    challenge_types = session.get("challenge_types", [])
+    bookmarks       = session.get("bookmarks", [])
 
     careers = load_careers()
-    scored  = compute_scores(careers, interests, strengths)
+    scored  = compute_scores(careers, interests, strengths, work_style, challenge_types)
 
     # Primary career: first bookmark that is also top-scored; else just top scored
     bookmark_scored = [s for s in scored if s["career"]["id"] in bookmarks]

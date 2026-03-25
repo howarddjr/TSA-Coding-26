@@ -421,5 +421,136 @@
       ]
     },
     "entry_level_jobs": ["Bioinformatics Analyst", "Research Computing Technician", "Computational Biology Research Assistant"]
+  },
+  {
+    "id": "civil-engineer",
+    "title": "Civil Engineer",
+    "summary": "Designs infrastructure that supports communities—roads, bridges, water, and buildings.",
+    "description": "Civil engineers plan and oversee construction of public and private infrastructure, ensuring safety, sustainability, and compliance. They collaborate with surveyors, architects, and contractors and often specialize in structural, environmental, transportation, or geotechnical fields.",
+    "icon": "fa-solid fa-building",
+    "image_url": "/static/img/civil-engineer.jpg",
+    "color": "#0ea5e9",
+    "tags": ["engineering", "math", "design", "project-management"],
+    "hs_courses": ["Algebra II", "Geometry", "Physics", "Precalculus/Calculus", "Environmental Science"],
+    "extracurriculars": ["Math club", "Engineering club", "Model UN/infrastructure case competitions", "Volunteering on local builds"],
+    "skills": {
+      "technical": ["Statistics", "Statics and dynamics", "CAD (AutoCAD/Revit)", "Surveying basics"],
+      "transferable": ["Project planning", "Communication", "Leadership", "Attention to detail"]
+    },
+    "roadmap": {
+      "high_school": [
+        "Build strong math and science fundamentals; practice problem-solving and project sketches.",
+        "Join clubs that involve design, construction, or community service projects."
+      ],
+      "post_secondary": [
+        "Pursue an ABET-accredited Civil Engineering degree and complete internships.",
+        "Gain experience with CAD, site design, construction materials, and codes."
+      ],
+      "early_career": [
+        "Start as EIT/engineering intern; obtain Fundamentals of Engineering (FE) license.",
+        "Work on supervised design and field inspection to earn Professional Engineer (PE) eligibility."
+      ]
+    },
+    "education_links": {
+      "majors": [
+        {"title": "B.S. in Civil Engineering (placeholder)", "url": "https://example.edu/majors/civil-engineering"},
+        {"title": "B.S. in Construction Engineering (placeholder)", "url": "https://example.edu/majors/construction-engineering"}
+      ],
+      "programs": [
+        {"title": "Construction Management Certificate (placeholder)", "url": "https://example.edu/programs/construction-management"}
+      ],
+      "certifications": [
+        {"title": "Fundamentals of Engineering (FE)", "url": "https://ncees.org/engineering/fe/"}
+      ]
+    },
+    "entry_level_jobs": ["Civil Engineering Intern", "EIT (Engineer in Training)", "Site Inspector"]
+  },
+  {
+    "id": "chemical-engineer",
+    "title": "Chemical Engineer",
+    "summary": "Transforms raw materials into products through chemistry, processes, and equipment.",
+    "description": "Chemical engineers design processes for producing chemicals, pharmaceuticals, fuels, and materials while ensuring safety and efficiency. They apply principles of chemistry, thermodynamics, and transport phenomena in lab and plant settings.",
+    "icon": "fa-solid fa-flask",
+    "image_url": "/static/img/chemical-engineer.jpg",
+    "color": "#f97316",
+    "tags": ["chemistry", "engineering", "math", "sustainability"],
+    "hs_courses": ["Chemistry", "Physics", "Algebra II", "Precalculus/Calculus", "AP Chemistry"],
+    "extracurriculars": ["Science olympiad", "Chemistry club", "Research fairs", "STEM internships"],
+    "skills": {
+      "technical": ["Process simulation (Aspen/HYSYS)", "Chemical thermodynamics", "Material balances", "Safety/HAZOP basics"],
+      "transferable": ["Analytical reasoning", "Teamwork", "Process documentation", "Time management"]
+    },
+    "roadmap": {
+      "high_school": [
+        "Develop strong chemistry and math foundation; take advanced science electives.",
+        "Complete lab research or internships in manufacturing labs."
+      ],
+      "post_secondary": [
+        "Major in Chemical Engineering and engage in co-op programs.",
+        "Learn process design tools, catalysis, and quality control.",
+        "Pursue internships with chemical manufacturers or biotech companies."
+      ],
+      "early_career": [
+        "Enter as process engineer intern or junior process engineer.",
+        "Work in process optimization, scale-up, and plant troubleshooting."
+      ]
+    },
+    "education_links": {
+      "majors": [
+        {"title": "B.S. in Chemical Engineering (placeholder)", "url": "https://example.edu/majors/chemical-engineering"},
+        {"title": "B.S. in Materials Engineering (placeholder)", "url": "https://example.edu/majors/materials-engineering"}
+      ],
+      "programs": [
+        {"title": "Process Engineering Certificate (placeholder)", "url": "https://example.edu/programs/process-engineering"}
+      ],
+      "certifications": [
+        {"title": "EIT (Fundamentals of Engineering)", "url": "https://ncees.org/engineering/fe/"},
+        {"title": "Certified Chemical Engineer (placeholder)", "url": "https://example.org/certifications/chemical-engineer"}
+      ]
+    },
+    "entry_level_jobs": ["Process Engineering Intern", "Junior Chemical Engineer", "Quality Control Engineer"]
+  },
+  {
+    "id": "aerospace-engineer",
+    "title": "Aerospace Engineer",
+    "summary": "Designs aircraft, spacecraft, satellites, and missiles through advanced engineering.",
+    "description": "Aerospace engineers develop flight systems, propulsion, and structural components for aviation and space exploration. They run simulations, test prototypes, and collaborate with cross-discipline teams to meet stringent safety and performance requirements.",
+    "icon": "fa-solid fa-space-shuttle",
+    "image_url": "/static/img/aerospace-engineer.jpg",
+    "color": "#0f172a",
+    "tags": ["physics", "engineering", "math", "innovation"],
+    "hs_courses": ["Physics", "Calculus", "Algebra II", "Computer Science", "Engineering"],
+    "extracurriculars": ["AIAA student branches", "Rocketry club", "Coding/robotics", "STEM design challenges"],
+    "skills": {
+      "technical": ["Aerodynamics", "Structural analysis", "MATLAB/Simulink", "C++/Python for simulation"],
+      "transferable": ["Critical thinking", "Systems engineering", "Teamwork", "Attention to precision"]
+    },
+    "roadmap": {
+      "high_school": [
+        "Master Physics and Calculus; design model rockets or drones.",
+        "Attend aerospace camps and read about flight mechanics."
+      ],
+      "post_secondary": [
+        "Major in Aerospace Engineering or Mechanical Engineering with aerospace electives.",
+        "Intern with aerospace manufacturers, defense labs, or research groups."
+      ],
+      "early_career": [
+        "Start as junior aerospace engineer or test engineer.",
+        "Gain experience in CAD, CFD, and certification processes."
+      ]
+    },
+    "education_links": {
+      "majors": [
+        {"title": "B.S. in Aerospace Engineering (placeholder)", "url": "https://example.edu/majors/aerospace-engineering"},
+        {"title": "B.S. in Mechanical Engineering (placeholder)", "url": "https://example.edu/majors/mechanical-engineering"}
+      ],
+      "programs": [
+        {"title": "Space Systems Certificate (placeholder)", "url": "https://example.edu/programs/space-systems"}
+      ],
+      "certifications": [
+        {"title": "Certified Systems Engineering Professional (INCOSE)", "url": "https://www.incose.org/certification"}
+      ]
+    },
+    "entry_level_jobs": ["Junior Aerospace Engineer", "Test Engineer", "Flight Systems Analyst"]
   }
 ]

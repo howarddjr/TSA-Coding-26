@@ -19,7 +19,7 @@
         </p>
         <div class="hero-stats">
           <div class="hero-stat">
-            <span class="hero-stat-num">10</span>
+            <span class="hero-stat-num">13</span>
             <span class="hero-stat-label">STEM Careers</span>
           </div>
           <div class="hero-stat">
@@ -71,6 +71,50 @@
             <option value="11">Grade 11 (Junior)</option>
             <option value="12">Grade 12 (Senior)</option>
           </select>
+        </div>
+
+        <hr style="border-color: var(--clr-border); margin: 1.5rem 0;" />
+
+        <!-- Learning style -->
+        <div class="quiz-section mb-5" id="learningStyleSection">
+          <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <h2 class="quiz-section-title mb-0">
+              <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+              How do you like to work?
+            </h2>
+          </div>
+          <p class="text-muted small mb-3">Choose up to 2 styles that feel most like you.</p>
+          <div class="interest-grid" role="group" aria-label="Work style options">
+            {% for option in [('hands-on', 'Hands-on / Build things'), ('research', 'Research & analysis'), ('creative', 'Creative design'), ('team', 'Team projects'), ('independent', 'Independent deep work')] %}
+            <label class="check-label">
+              <input type="checkbox" name="work_style" value="{{ option[0] }}" {% if option[0] in selected_work_style %}checked{% endif %} />
+              <span class="check-box" aria-hidden="true"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+              {{ option[1] }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <hr style="border-color: var(--clr-border); margin: 1.5rem 0;" />
+
+        <!-- Challenge type -->
+        <div class="quiz-section mb-5" id="challengeTypeSection">
+          <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <h2 class="quiz-section-title mb-0">
+              <i class="fa-solid fa-atom" aria-hidden="true"></i>
+              What problems excite you?
+            </h2>
+          </div>
+          <p class="text-muted small mb-3">Pick the challenge themes that feel motivating.</p>
+          <div class="interest-grid" role="group" aria-label="Challenge type options">
+            {% for option in [('design', 'Design new solutions'), ('data', 'Analyze data'), ('sustainability', 'Protect the planet'), ('health', 'Improve health outcomes'), ('systems', 'Optimize systems')] %}
+            <label class="check-label">
+              <input type="checkbox" name="challenge_types" value="{{ option[0] }}" {% if option[0] in selected_challenge_types %}checked{% endif %} />
+              <span class="check-box" aria-hidden="true"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+              {{ option[1] }}
+            </label>
+            {% endfor %}
+          </div>
         </div>
 
         <hr style="border-color: var(--clr-border); margin: 1.5rem 0;" />
@@ -183,7 +227,7 @@
       <div class="col-md-4 animate-fade-up anim-delay-{{ loop.index }}">
         <div class="p-4 bg-surface border-custom radius-lg shadow-custom h-100">
           <div class="d-flex align-items-center justify-content-center mb-3">
-            <div style="width:3.5rem;height:3.5rem;border-radius:.875rem;background:{{ step[2] }};display:flex;align-items:center;justify-content:center;color:white;font-size:1.4rem;" aria-hidden="true">
+            <div class="step-badge" style="--step-color: {{ step[2] or '#0ea5e9' }};" aria-hidden="true">
               <i class="{{ step[1] }}"></i>
             </div>
           </div>

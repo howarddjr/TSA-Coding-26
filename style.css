@@ -103,10 +103,40 @@ img { max-width: 100%; height: auto; }
 
 /* ── Navbar ─────────────────────────────────────────────────── */
 #mainNav {
-  background: var(--clr-surface);
-  border-bottom: 2px solid var(--clr-border);
-  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background-color: #0ea5e9 !important;
+  border-bottom: 2px solid rgba(255,255,255,0.25);
+  box-shadow: var(--shadow-lg);
   padding: .75rem 0;
+  backdrop-filter: none;
+}
+
+[data-bs-theme="dark"] #mainNav {
+  background-color: #1e3a5f !important;
+}
+
+.navbar, .navbar-collapse {
+  background-color: transparent !important;
+}
+
+#mainNav .navbar-brand,
+#mainNav .nav-link,
+#mainNav .btn-bookmark-nav,
+#mainNav .btn-dark-toggle {
+  color: white !important;
+}
+
+#mainNav .nav-link.active {
+  color: #fde68a !important;
+}
+
+#mainNav .navbar-nav .badge {
+  background-color: #f97316 !important;
+  color: white !important;
 }
 
 .navbar-brand {
@@ -256,6 +286,18 @@ img { max-width: 100%; height: auto; }
   font-size: .8rem;
   color: rgba(255,255,255,.7);
   font-weight: 500;
+}
+
+.step-badge {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: .875rem;
+  background: var(--step-color, #0ea5e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.4rem;
 }
 
 /* ── Buttons ────────────────────────────────────────────────── */
